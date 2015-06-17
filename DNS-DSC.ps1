@@ -6,6 +6,12 @@ function Format-DscScriptBlock()
         [parameter(Mandatory=$true)]
         [System.Management.Automation.ScriptBlock] $ScriptBlock
     )
+
+
+
+
+
+
     $result = $ScriptBlock.ToString();
     foreach( $key in $Params.Keys )
     {
@@ -13,8 +19,12 @@ function Format-DscScriptBlock()
     }
     return $result;
 }
-
 Clear-Host
+
+
+
+
+#PRATHAM IS AWEOMSE
 
 # Params
 $Params = @{
