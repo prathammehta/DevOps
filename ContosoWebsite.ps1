@@ -1,11 +1,11 @@
-$sourceFile = "http://liquidtelecom.dl.sourceforge.net/project/vlcplayermsiinstallers/v2.2.0/VLC%20Player%202.2.0.zip"
-$destFile = "c:\users\public\documents\vlc.msi"
-Invoke-WebRequest $sourceFile -outFile $destFile
-Start-Process $destFile -ArgumentList "/qn" -Wait
-
-
 Configuration ContosoWebsite
 {
+
+  $sourceFile = "http://liquidtelecom.dl.sourceforge.net/project/vlcplayermsiinstallers/v2.2.0/VLC%20Player%202.2.0.zip"
+  $destFile = "c:\users\public\documents\vlc.msi"
+  Invoke-WebRequest $sourceFile -outFile $destFile
+  Start-Process $destFile -ArgumentList "/qn" -Wait
+	
   param ($MachineName)
 
   Node $MachineName
