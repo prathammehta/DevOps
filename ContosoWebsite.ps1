@@ -1,7 +1,3 @@
-Configuration ContosoWebsite
-{
-  param ($MachineName)
-
     $source = "https://codeload.github.com/prathammehta/DevOpsDSCResources/zip/master"
     $dest = "C:\Program Files\WindowsPowerShell\Modules\resource.zip"
     Invoke-WebRequest $source -OutFile $dest 
@@ -23,13 +19,20 @@ Configuration ContosoWebsite
     Remove-Item "C:\Program Files\WindowsPowerShell\Modules\DevOpsDSCResources-master" -Force -Recurse
 
     Add-WindowsFeature dsc-service
+    Get-dscresource
+  
+ $dscconfig = @'
+ Configuration ContosoWebsite
+{
+  param ($MachineName)
 
-    $string = @'
+    Import-DSCResource -ModuleName ContosoDscResources
     
+     
     Node $MachineName
     {
- 
-        Import-DscResource -Module ContosoDscResources
+
+       
 
         ContosoPrintServer EnablePrintServer
         {
@@ -39,10 +42,9 @@ Configuration ContosoWebsite
         {
         }
     }
+   }
 '@
 
-    Invoke-Expression $string
- 
-}
+Invoke-Expression $dscconfig
 
-ContosoWebsite -MachineName compostvm
+ContosoWebsite -MachineName devvm0 
