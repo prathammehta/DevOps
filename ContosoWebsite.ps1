@@ -2,39 +2,43 @@ Configuration ContosoWebsite
 {
   param ($MachineName)
 
-  Node $MachineName
-  {
-
+    $source = "https://codeload.github.com/prathammehta/DevOpsDSCResources/zip/master"
+    $dest = "C:\Program Files\WindowsPowerShell\Modules\resource.zip"
+    Invoke-WebRequest $source -OutFile $dest 
     
-    $sourceFile = "http://www.compit.se/download/MSI/VLC%20Media%20Player-x64-v2.1.5.msi"
-    $destFile = "c:\users\public\documents\vlc.msi"
-    Invoke-WebRequest $sourceFile -outFile $destFile
-    Start-Process $destFile -ArgumentList "/qn" -Wait
+    $file = $dest 
+    $destination = "C:\Program Files\WindowsPowerShell\Modules"
 
-    $TFSSource = "http://download.microsoft.com/download/3/1/1/31149D54-CE97-4403-99E2-EBBEB790B718/vs2013.4_tfs_enu.iso"
-    $TFSDest = "c:\users\public\documents\tfs.iso"
-    Invoke-WebRequest $TFSSource -outFIle $TFSDest
-    Mount-DiskImage -ImagePath $TFSDest
-    Invoke-Expression "F:\TFS_server.exe /quiet /install"
-
-    #Install the IIS Role
-    WindowsFeature IIS
+    $shell = new-object -com shell.application
+    $zip = $shell.NameSpace($file)
+    foreach($item in $zip.items())
     {
-      Ensure = “Present”
-      Name = “Web-Server”
+        $shell.Namespace($destination).copyhere($item)
     }
+    
+    cd "C:\Program Files\WindowsPowerShell\Modules\DevOpsDSCResources-master"
+    Move-Item -Path "C:\Program Files\WindowsPowerShell\Modules\DevOpsDSCResources-master\ContosoDscResources" -Destination "C:\Program Files\WindowsPowerShell\Modules" 
+    cd "C:\Program Files\WindowsPowerShell\Modules"
+    Remove-Item $dest -Force -Recurse
+    Remove-Item "C:\Program Files\WindowsPowerShell\Modules\DevOpsDSCResources-master" -Force -Recurse
 
-    #Install ASP.NET 4.5
-    WindowsFeature ASP
+    $string = @'
+    
+    Node $MachineName
     {
-      Ensure = “Present”
-      Name = “Web-Asp-Net45”
-    }
+ 
+        Import-DscResource -Module ContosoDscResources
 
-     WindowsFeature WebServerManagementConsole
-    {
-        Name = "Web-Mgmt-Console"
-        Ensure = "Present"
+        ContosoPrintServer EnablePrintServer
+        {
+        }
+
+        ContosoWebServer DisableWebServer
+        {
+        }
     }
-  }
-} 
+'@
+
+    Invoke-Expression $string
+ 
+}
