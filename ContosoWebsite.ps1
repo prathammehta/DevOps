@@ -22,6 +22,8 @@ Configuration ContosoWebsite
     Remove-Item $dest -Force -Recurse
     Remove-Item "C:\Program Files\WindowsPowerShell\Modules\DevOpsDSCResources-master" -Force -Recurse
 
+    Add-WindowsFeature dsc-service
+
     $string = @'
     
     Node $MachineName
@@ -42,3 +44,5 @@ Configuration ContosoWebsite
     Invoke-Expression $string
  
 }
+
+ContosoWebsite -MachineName compostvm
