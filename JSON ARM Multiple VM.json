@@ -52,6 +52,7 @@
             "East Asia",
             "Southeast Asia"
           ],
+          "defaultValue": "West US",
           "metadata": {
             "description": "Location to deploy the VM in"
           }
@@ -532,12 +533,37 @@
       "adminPassword": {
         "value": "Applegr8"
       },
-      "location": {
-        "value": "West US"
-      },
       "vmSize": {
-        "value": "Standard_D1"
+        "value": "Standard_A5"
+      },
+      "testNumberOfInstances": {
+        "value": 2
+      },
+      "buildNumberOfInstances": {
+        "value": 3
+      },
+      "devNumberOfInstances": {
+        "value": 1
+      },
+      "devmodulesUrl": {
+        "value": ""
+      },
+      "devconfigurationFunction": {
+        "value": ""
+      },
+      "testmodulesUrl": {
+        "value": ""
+      },
+      "testconfigurationFunction": {
+        "value": ""
+      },
+
+      "buildmodulesUrl": {
+        "value": ""
+      },
+      "buildconfigurationFunction": {
+        "value": ""
       }
     }
   }
-  } 
+} 
