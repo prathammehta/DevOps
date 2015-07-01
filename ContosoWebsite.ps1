@@ -47,7 +47,7 @@
     
     Node "localhost"
     {
-	DNSServerSetup InstallDNSDependencies
+	DNSServerSetup InstallDNS
 	{
 	    "adminUsername" = "pratham"
 	}
