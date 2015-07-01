@@ -28,6 +28,11 @@
     Get-dscresource
 
     "$(Get-Date) Get DSCResource Completed" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append
+
+    $ConfigData = @{
+        AllNodes = @(
+            @{ NodeName="localhost" ; PSDscAllowPlainTextPassword = $true }
+    )};
   
  $dscconfig = @'
  Configuration ContosoWebsite
@@ -38,20 +43,27 @@
     
     "$(Get-Date) Module Imported" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append 
 
+      
+    
     Node "localhost"
     {
+	DNSServerSetup InstallDNSDependencies
+	{
+	    "adminUsername" = "pratham"
+	}
 
        
+        "$(Get-Date) DNS server Setup successfull" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append
 
-        ContosoPrintServer EnablePrintServer
+        DNSServerRun RunConfiguration
         {
+            "Domainname" = "microhard.dev"
+            "DomainAdminUsername" = "pratham"
+            "DomainAdminPassword" = "Applegr8"
         }
 
-        "$(Get-Date) Print server installed" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append
+        "$(Get-Date) DNS server installed" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append
 
-        ContosoWebServer DisableWebServer
-        {
-        }
 
         "$(Get-Date) WebServer Disabled" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append
     }
@@ -62,6 +74,6 @@ Invoke-Expression $dscconfig
 
 "$(Get-Date) Node block invoked" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append
 
-ContosoWebsite -MachineName devvm0 
+ContosoWebsite -MachineName devvm0 -ConfigurationData $ConfigData
 
 "$(Get-Date) Configuration function called" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append
