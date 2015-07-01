@@ -38,7 +38,7 @@
     
     "$(Get-Date) Module Imported" | Out-File -FilePath C:\users\Public\Documents\logs.txt -Append 
 
-    Node $MachineName
+    Node "localhost"
     {
 
        
