@@ -112,7 +112,7 @@
 			$adminUserName
 		)
 
-		$downloadDirectory = ("C:\Users\"+$adminUserName+"\Downloads");
+		$downloadDirectory = ("C:\Users\Public\Downloads");
 
 		# Install the DSC Resource Kit
 		Write-Output "INFO: Installing DSC Resource Kit";
