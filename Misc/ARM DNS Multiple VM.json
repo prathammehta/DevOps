@@ -590,7 +590,7 @@
           "name": "dnsPublicIP",
           "location": "[parameters('location')]",
           "properties": {
-            "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+            "publicIPAllocationMethod": "dynamic"
           }
         },
         {
