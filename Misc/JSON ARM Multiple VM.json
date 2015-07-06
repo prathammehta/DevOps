@@ -512,9 +512,7 @@
               "ModulesUrl": "[parameters('devmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('devconfigurationFunction')]",
-              "Properties": {
-                "MachineName": "[concat('devvm',copyindex())]"
-              }
+              "Properties": {}
             },
             "protectedSettings": null
           }
@@ -539,9 +537,7 @@
               "ModulesUrl": "[parameters('testmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('testconfigurationFunction')]",
-              "Properties": {
-                "MachineName": "[concat('testvm',copyindex())]"
-              }
+              "Properties": {}
             },
             "protectedSettings": null
           }
@@ -566,9 +562,7 @@
               "ModulesUrl": "[parameters('buildmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('buildconfigurationFunction')]",
-              "Properties": {
-                "MachineName": "[concat('buildvm',copyindex())]"
-              }
+              "Properties": {}
             },
             "protectedSettings": null
           }
