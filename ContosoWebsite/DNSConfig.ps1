@@ -21,7 +21,7 @@ Configuration DNSConfig
     { 
 	#ConfigurationBlock
     
-	RemoteDesktopAdmin RDPAdmin 
+	xRemoteDesktopAdmin RDPAdmin 
 	{
 		Ensure = "Present"
 		serAuthentication = "NonSecure"
