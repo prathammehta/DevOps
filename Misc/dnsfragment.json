@@ -45,7 +45,7 @@
     ],
     "properties": {
       "hardwareProfile": {
-        "vmSize": "[parameters('dnsvmSize')]"
+        "vmSize": "Standard_D1"
       },
       "osProfile": {
         "computername": "dnsvm",
@@ -54,9 +54,9 @@
       },
       "storageProfile": {
         "imageReference": {
-          "publisher": "[variables('dnsimagePublisher')]",
-          "offer": "[variables('dnsimageOffer')]",
-          "sku": "[parameters('dnsimageSKU')]",
+          "publisher": "MicrosoftWindowsServer",
+          "offer": "WindowsServer",
+          "sku": "2012-R2-Datacenter",
           "version": "latest"
         },
         "osDisk": {
@@ -93,7 +93,7 @@
         "ModulesUrl": "[parameters('dnsmodulesUrl')]",
         "SasToken": "",
         "ConfigurationFunction": "[parameters('dnsconfigurationFunction')]",
-        "Properties": {}
+        "Properties": { }
       }
     }
   }

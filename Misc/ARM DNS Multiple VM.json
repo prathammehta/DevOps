@@ -1,0 +1,730 @@
+{
+  "properties": {
+    "template": {
+      "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "adminUsername": {
+          "type": "string",
+          "metadata": {
+            "description": "Admin username for VM"
+          }
+        },
+        "adminPassword": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Admin password for VM"
+          }
+        },
+        "newStorageAccountName": {
+          "type": "string",
+          "metadata": {
+            "description": "Unique storage account name"
+          }
+        },
+        "testNumberOfInstances": {
+          "type": "int",
+          "defaultValue": 0,
+          "metadata": {
+            "description": "Number of test VMs to deploy"
+          }
+        },
+        "buildNumberOfInstances": {
+          "type": "int",
+          "defaultValue": 2,
+          "metadata": {
+            "description": "Number of build VMs to deploy"
+          }
+        },
+        "devNumberOfInstances": {
+          "type": "int",
+          "defaultValue": 0,
+          "metadata": {
+            "description": "Number of dev VMs to deploy"
+          }
+        },
+        "location": {
+          "type": "string",
+          "allowedValues": [
+            "West US",
+            "East US",
+            "West Europe",
+            "East Asia",
+            "Southeast Asia"
+          ],
+          "defaultValue": "West US",
+          "metadata": {
+            "description": "Location to deploy the VM in"
+          }
+        },
+        "testvmSize": {
+          "defaultValue" : "Standard_D1",
+          "type": "string",
+          "metadata": {
+            "description": "Size of the Virtual Machine."
+          }
+        },
+        "buildvmSize": {
+          "defaultValue" : "Standard_D1",
+          "type": "string",
+          "metadata": {
+            "description": "Size of the Virtual Machine."
+          }
+        },
+        "devvmSize": {
+          "defaultValue" : "Standard_D1",
+          "type": "string",
+          "metadata": {
+            "description": "Size of the Virtual Machine."
+          }
+        },
+        "testimagePublisher": {
+          "type": "string",
+          "defaultValue": "MicrosoftWindowsServer",
+          "metadata": {
+            "description": "Image Publisher"
+          }
+        },
+        "buildimagePublisher": {
+          "type": "string",
+          "defaultValue": "MicrosoftWindowsServer",
+          "metadata": {
+            "description": "Image Publisher"
+          }
+        },
+        "devimagePublisher": {
+          "type": "string",
+          "defaultValue": "MicrosoftWindowsServer",
+          "metadata": {
+            "description": "Image Publisher"
+          }
+        },
+        "testimageOffer": {
+          "type": "string",
+          "defaultValue": "WindowsServer",
+          "metadata": {
+            "description": "Image Offer"
+          }
+        },
+        "devimageOffer": {
+          "type": "string",
+          "defaultValue": "WindowsServer",
+          "metadata": {
+            "description": "Image Offer"
+          }
+        },
+        "buildimageOffer": {
+          "type": "string",
+          "defaultValue": "WindowsServer",
+          "metadata": {
+            "description": "Image Offer"
+          }
+        },
+        "buildimageSKU": {
+          "type": "string",
+          "defaultValue": "2012-R2-Datacenter",
+          "metadata": {
+            "description": "Image SKU"
+          }
+        },
+        "devimageSKU": {
+          "type": "string",
+          "defaultValue": "2012-R2-Datacenter",
+          "metadata": {
+            "description": "Image SKU"
+          }
+        },
+        "testimageSKU": {
+          "type": "string",
+          "defaultValue": "2012-R2-Datacenter",
+          "metadata": {
+            "description": "Image SKU"
+          }
+        },
+        "devmodulesUrl": {
+          "type": "string",
+          "defaultValue": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip",
+          "metadata": {
+            "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
+          }
+        },
+        "devconfigurationFunction": {
+          "type": "string",
+          "defaultValue": "DevConfig.ps1\\DevConfig",
+          "metadata": {
+            "description": "DSC configuration function to call"
+          }
+        },
+        "testmodulesUrl": {
+          "type": "string",
+          "defaultValue": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip",
+          "metadata": {
+            "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
+          }
+        },
+        "testconfigurationFunction": {
+          "type": "string",
+          "defaultValue": "TestConfig.ps1\\TestConfig",
+          "metadata": {
+            "description": "DSC configuration function to call"
+          }
+        },
+        "buildmodulesUrl": {
+          "type": "string",
+          "defaultValue": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip",
+          "metadata": {
+            "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
+          }
+        },
+        "buildconfigurationFunction": {
+          "type": "string",
+          "defaultValue": "BuildConfig.ps1\\BuildConfig",
+          "metadata": {
+            "description": "DSC configuration function to call"
+          }
+        },
+        "dnsmodulesUrl": {
+          "type": "string",
+          "defaultValue": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip",
+          "metadata": {
+            "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
+          }
+        },
+        "dnsconfigurationFunction": {
+          "type": "string",
+          "defaultValue": "DNSConfig.ps1\\DNSConfig",
+          "metadata": {
+            "description": "DSC configuration function to call"
+          }
+        }
+      },
+      "variables": {
+        "virtualNetworkName": "myVNET",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+        "addressPrefix": "10.0.0.0/16",
+        "subnet1Name": "Subnet-1",
+        "subnet1Prefix": "10.0.0.0/24",
+        "subnet1Ref": "[concat(variables('vnetID'),'/subnets/', variables('subnet1Name'))]",
+        "vmStorageAccountContainerName": "vhds",
+        "vmExtensionName": "dscExtension"
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Storage/storageAccounts",
+          "name": "[parameters('newStorageAccountName')]",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('location')]",
+          "properties": {
+            "accountType": "Standard_LRS"
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/virtualNetworks",
+          "name": "[variables('virtualNetworkName')]",
+          "location": "[parameters('location')]",
+          "properties": {
+            "addressSpace": {
+              "addressPrefixes": [
+                "[variables('addressPrefix')]"
+              ]
+            },
+            "subnets": [
+              {
+                "name": "[variables('subnet1Name')]",
+                "properties": {
+                  "addressPrefix": "[variables('subnet1Prefix')]"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/publicIPAddresses",
+          "name": "[concat('dev','publicIP', copyIndex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "publicIPLoop",
+            "count": "[parameters('devNumberOfInstances')]"
+          },
+          "properties": {
+            "publicIPAllocationMethod": "Dynamic"
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/publicIPAddresses",
+          "name": "[concat('test','publicIP', copyIndex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "publicIPLoop",
+            "count": "[parameters('testNumberOfInstances')]"
+          },
+          "properties": {
+            "publicIPAllocationMethod": "Dynamic"
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/publicIPAddresses",
+          "name": "[concat('build','publicIP', copyIndex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "publicIPLoop",
+            "count": "[parameters('buildNumberOfInstances')]"
+          },
+          "properties": {
+            "publicIPAllocationMethod": "Dynamic"
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/networkInterfaces",
+          "name": "[concat('devnic', copyindex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "nicLoop",
+            "count": "[parameters('devNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+            "[concat('Microsoft.Network/publicIPAddresses/', 'devpublicIP', copyindex())]"
+          ],
+          "properties": {
+            "ipConfigurations": [
+              {
+                "name": "devipconfig1",
+                "properties": {
+                  "privateIPAllocationMethod": "Dynamic",
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat('devpublicIP', copyindex()))]"
+                  },
+                  "subnet": {
+                    "id": "[variables('subnet1Ref')]"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/networkInterfaces",
+          "name": "[concat('testnic', copyindex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "nicLoop",
+            "count": "[parameters('testNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+            "[concat('Microsoft.Network/publicIPAddresses/', 'testpublicIP', copyindex())]"
+          ],
+          "properties": {
+            "ipConfigurations": [
+              {
+                "name": "testipconfig1",
+                "properties": {
+                  "privateIPAllocationMethod": "Dynamic",
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat('testpublicIP', copyindex()))]"
+                  },
+                  "subnet": {
+                    "id": "[variables('subnet1Ref')]"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/networkInterfaces",
+          "name": "[concat('buildnic', copyindex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "nicLoop",
+            "count": "[parameters('buildNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+            "[concat('Microsoft.Network/publicIPAddresses/', 'buildpublicIP', copyindex())]"
+          ],
+          "properties": {
+            "ipConfigurations": [
+              {
+                "name": "buildfipconfig1",
+                "properties": {
+                  "privateIPAllocationMethod": "Dynamic",
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat('buildpublicIP', copyindex()))]"
+                  },
+                  "subnet": {
+                    "id": "[variables('subnet1Ref')]"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Compute/virtualMachines",
+          "name": "[concat('devvm', copyIndex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "virtualMachineLoop",
+            "count": "[parameters('devNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Network/networkInterfaces/', 'devnic', copyindex())]",
+            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]"
+          ],
+          "properties": {
+            "hardwareProfile": {
+              "vmSize": "[parameters('devvmSize')]"
+            },
+            "osProfile": {
+              "computername": "[concat('devvm', copyIndex())]",
+              "adminUsername": "[parameters('adminUsername')]",
+              "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+              "imageReference": {
+                "publisher": "[parameters('devimagePublisher')]",
+                "offer": "[parameters('devimageOffer')]",
+                "sku": "[parameters('devimageSKU')]",
+                "version": "latest"
+              },
+              "osDisk": {
+                "name": "osdisk",
+                "vhd": {
+                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','devosdisk', copyIndex(), '.vhd')]"
+                },
+                "caching": "ReadWrite",
+                "createOption": "FromImage"
+              }
+            },
+            "networkProfile": {
+              "networkInterfaces": [
+                {
+                  "id": "[resourceId('Microsoft.Network/networkInterfaces',concat('devnic', copyindex()))]"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Compute/virtualMachines",
+          "name": "[concat('testvm', copyIndex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "virtualMachineLoop",
+            "count": "[parameters('testNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Network/networkInterfaces/', 'testnic', copyindex())]",
+            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]"
+          ],
+          "properties": {
+            "hardwareProfile": {
+              "vmSize": "[parameters('testvmSize')]"
+            },
+            "osProfile": {
+              "computername": "[concat('testvm', copyIndex())]",
+              "adminUsername": "[parameters('adminUsername')]",
+              "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+              "imageReference": {
+                "publisher": "[parameters('testimagePublisher')]",
+                "offer": "[parameters('testimageOffer')]",
+                "sku": "[parameters('testimageSKU')]",
+                "version": "latest"
+              },
+              "osDisk": {
+                "name": "osdisk",
+                "vhd": {
+                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','testosdisk', copyIndex(), '.vhd')]"
+                },
+                "caching": "ReadWrite",
+                "createOption": "FromImage"
+              }
+            },
+            "networkProfile": {
+              "networkInterfaces": [
+                {
+                  "id": "[resourceId('Microsoft.Network/networkInterfaces',concat('testnic', copyindex()))]"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Compute/virtualMachines",
+          "name": "[concat('buildvm', copyIndex())]",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "virtualMachineLoop",
+            "count": "[parameters('buildNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Network/networkInterfaces/', 'buildnic', copyindex())]",
+            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]"
+          ],
+          "properties": {
+            "hardwareProfile": {
+              "vmSize": "[parameters('buildvmSize')]"
+            },
+            "osProfile": {
+              "computername": "[concat('buildvm', copyIndex())]",
+              "adminUsername": "[parameters('adminUsername')]",
+              "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+              "imageReference": {
+                "publisher": "[parameters('buildimagePublisher')]",
+                "offer": "[parameters('buildimageOffer')]",
+                "sku": "[parameters('buildimageSKU')]",
+                "version": "latest"
+              },
+              "osDisk": {
+                "name": "osdisk",
+                "vhd": {
+                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','buildosdisk', copyIndex(), '.vhd')]"
+                },
+                "caching": "ReadWrite",
+                "createOption": "FromImage"
+              }
+            },
+            "networkProfile": {
+              "networkInterfaces": [
+                {
+                  "id": "[resourceId('Microsoft.Network/networkInterfaces',concat('buildnic', copyindex()))]"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat('devvm',copyindex(),'/devvmextension')]",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "extensionLoop",
+            "count": "[parameters('devNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', 'devvm',copyindex())]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "1.9",
+            "settings": {
+              "ModulesUrl": "[parameters('devmodulesUrl')]",
+              "SasToken": "",
+              "ConfigurationFunction": "[parameters('devconfigurationFunction')]",
+              "Properties": { }
+            },
+            "protectedSettings": null
+          }
+        },
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat('testvm',copyindex(),'/testvmextension')]",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "extensionLoop",
+            "count": "[parameters('testNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', 'testvm',copyindex())]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "1.9",
+            "settings": {
+              "ModulesUrl": "[parameters('testmodulesUrl')]",
+              "SasToken": "",
+              "ConfigurationFunction": "[parameters('testconfigurationFunction')]",
+              "Properties": { }
+            },
+            "protectedSettings": null
+          }
+        },
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat('buildvm',copyindex(),'/buildvmextension')]",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('location')]",
+          "copy": {
+            "name": "extensionLoop",
+            "count": "[parameters('buildNumberOfInstances')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', 'buildvm',copyindex())]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "1.9",
+            "settings": {
+              "ModulesUrl": "[parameters('buildmodulesUrl')]",
+              "SasToken": "",
+              "ConfigurationFunction": "[parameters('buildconfigurationFunction')]",
+              "Properties": { }
+            },
+            "protectedSettings": null
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/publicIPAddresses",
+          "name": "dnsPublicIP",
+          "location": "[parameters('location')]",
+          "properties": {
+            "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/networkInterfaces",
+          "name": "dnsnic",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Network/publicIPAddresses/dnsPublicIP",
+            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+          ],
+          "properties": {
+            "ipConfigurations": [
+              {
+                "name": "dnsipconfig1",
+                "properties": {
+                  "privateIPAllocationMethod": "Dynamic",
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'dnsPublicIP')]"
+                  },
+                  "subnet": {
+                    "id": "[variables('subnet1Ref')]"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Compute/virtualMachines",
+          "name": "dnsvm",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
+            "Microsoft.Network/networkInterfaces/dnsnic"
+          ],
+          "properties": {
+            "hardwareProfile": {
+              "vmSize": "Standard_D1"
+            },
+            "osProfile": {
+              "computername": "dnsvm",
+              "adminUsername": "[parameters('adminUsername')]",
+              "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+              "imageReference": {
+                "publisher": "MicrosoftWindowsServer",
+                "offer": "WindowsServer",
+                "sku": "2012-R2-Datacenter",
+                "version": "latest"
+              },
+              "osDisk": {
+                "name": "osdisk",
+                "vhd": {
+                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','osdisk.vhd')]"
+                },
+                "caching": "ReadWrite",
+                "createOption": "FromImage"
+              }
+            },
+            "networkProfile": {
+              "networkInterfaces": [
+                {
+                  "id": "[resourceId('Microsoft.Network/networkInterfaces', 'dnsnic')]"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "dnsvm/dnsvmextension",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Compute/virtualMachines/dnsvm"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "1.9",
+            "settings": {
+              "ModulesUrl": "[parameters('dnsmodulesUrl')]",
+              "SasToken": "",
+              "ConfigurationFunction": "[parameters('dnsconfigurationFunction')]",
+              "Properties": {
+                "DomainAdminUsername": "[parameters('adminUsername')]",
+                "DomainAdminPassword": "[parameters('adminPassword')]"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "mode": "incremental",
+    "parameters": {
+      "newStorageAccountName": {
+        "value": "multiplevmstore"
+      },
+      "adminUsername": {
+        "value": "sampra"
+      },
+      "adminPassword": {
+        "value": "Applegr8"
+      },
+      "testNumberOfInstances": {
+        "value": 1
+      },
+      "buildNumberOfInstances": {
+        "value": 1
+      },
+      "devNumberOfInstances": {
+        "value": 1
+      },
+      "devmodulesUrl": {
+        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
+      },
+      "devconfigurationFunction": {
+        "value": "DevConfig.ps1\\DevConfig"
+      },
+      "testmodulesUrl": {
+        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
+      },
+      "testconfigurationFunction": {
+        "value": "TestConfig.ps1\\TestConfig"
+      },
+      "buildmodulesUrl": {
+        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
+      },
+      "buildconfigurationFunction": {
+        "value": "BuildConfig.ps1\\BuildConfig"
+      }
+    }
+  }
+}
