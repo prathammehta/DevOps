@@ -57,7 +57,19 @@
             "description": "Location to deploy the VM in"
           }
         },
-        "vmSize": {
+        "testvmSize": {
+          "type": "string",
+          "metadata": {
+            "description": "Size of the Virtual Machine."
+          }
+        },
+        "buildvmSize": {
+          "type": "string",
+          "metadata": {
+            "description": "Size of the Virtual Machine."
+          }
+        },
+        "devvmSize": {
           "type": "string",
           "metadata": {
             "description": "Size of the Virtual Machine."
@@ -354,7 +366,7 @@
           ],
           "properties": {
             "hardwareProfile": {
-              "vmSize": "[parameters('vmSize')]"
+              "vmSize": "[parameters('devvmSize')]"
             },
             "osProfile": {
               "computername": "[concat('devvm', copyIndex())]",
@@ -363,9 +375,9 @@
             },
             "storageProfile": {
               "imageReference": {
-                "publisher": "[parameters('imagePublisher')]",
-                "offer": "[parameters('imageOffer')]",
-                "sku": "[parameters('imageSKU')]",
+                "publisher": "[parameters('devimagePublisher')]",
+                "offer": "[parameters('devimageOffer')]",
+                "sku": "[parameters('devimageSKU')]",
                 "version": "latest"
               },
               "osDisk": {
@@ -401,7 +413,7 @@
           ],
           "properties": {
             "hardwareProfile": {
-              "vmSize": "[parameters('vmSize')]"
+              "vmSize": "[parameters('testvmSize')]"
             },
             "osProfile": {
               "computername": "[concat('testvm', copyIndex())]",
@@ -410,9 +422,9 @@
             },
             "storageProfile": {
               "imageReference": {
-                "publisher": "[parameters('imagePublisher')]",
-                "offer": "[parameters('imageOffer')]",
-                "sku": "[parameters('imageSKU')]",
+                "publisher": "[parameters('testimagePublisher')]",
+                "offer": "[parameters('testimageOffer')]",
+                "sku": "[parameters('testimageSKU')]",
                 "version": "latest"
               },
               "osDisk": {
@@ -448,7 +460,7 @@
           ],
           "properties": {
             "hardwareProfile": {
-              "vmSize": "[parameters('vmSize')]"
+              "vmSize": "[parameters('buildvmSize')]"
             },
             "osProfile": {
               "computername": "[concat('buildvm', copyIndex())]",
@@ -457,9 +469,9 @@
             },
             "storageProfile": {
               "imageReference": {
-                "publisher": "[parameters('imagePublisher')]",
-                "offer": "[parameters('imageOffer')]",
-                "sku": "[parameters('imageSKU')]",
+                "publisher": "[parameters('buildimagePublisher')]",
+                "offer": "[parameters('buildimageOffer')]",
+                "sku": "[parameters('buildimageSKU')]",
                 "version": "latest"
               },
               "osDisk": {
