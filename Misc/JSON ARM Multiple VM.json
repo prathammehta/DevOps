@@ -63,21 +63,63 @@
             "description": "Size of the Virtual Machine."
           }
         },
-        "imagePublisher": {
+        "testimagePublisher": {
           "type": "string",
           "defaultValue": "MicrosoftWindowsServer",
           "metadata": {
             "description": "Image Publisher"
           }
         },
-        "imageOffer": {
+        "buildimagePublisher": {
+          "type": "string",
+          "defaultValue": "MicrosoftWindowsServer",
+          "metadata": {
+            "description": "Image Publisher"
+          }
+        },
+        "devimagePublisher": {
+          "type": "string",
+          "defaultValue": "MicrosoftWindowsServer",
+          "metadata": {
+            "description": "Image Publisher"
+          }
+        },
+        "testimageOffer": {
           "type": "string",
           "defaultValue": "WindowsServer",
           "metadata": {
             "description": "Image Offer"
           }
         },
-        "imageSKU": {
+        "devimageOffer": {
+          "type": "string",
+          "defaultValue": "WindowsServer",
+          "metadata": {
+            "description": "Image Offer"
+          }
+        },
+        "buildimageOffer": {
+          "type": "string",
+          "defaultValue": "WindowsServer",
+          "metadata": {
+            "description": "Image Offer"
+          }
+        },
+        "buildimageSKU": {
+          "type": "string",
+          "defaultValue": "2012-R2-Datacenter",
+          "metadata": {
+            "description": "Image SKU"
+          }
+        },
+        "devimageSKU": {
+          "type": "string",
+          "defaultValue": "2012-R2-Datacenter",
+          "metadata": {
+            "description": "Image SKU"
+          }
+        },
+        "testimageSKU": {
           "type": "string",
           "defaultValue": "2012-R2-Datacenter",
           "metadata": {
@@ -112,7 +154,6 @@
             "description": "DSC configuration function to call"
           }
         },
-
         "buildmodulesUrl": {
           "type": "string",
           "defaultValue": "https://github.com/JSam10/DevOps/raw/master/ContosoWebsite.ps1.zip",
@@ -557,7 +598,6 @@
       "testconfigurationFunction": {
         "value": ""
       },
-
       "buildmodulesUrl": {
         "value": ""
       },
@@ -566,4 +606,4 @@
       }
     }
   }
-} 
+}
