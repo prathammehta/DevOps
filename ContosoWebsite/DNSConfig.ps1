@@ -24,7 +24,7 @@ Configuration DNSConfig
 	xRemoteDesktopAdmin RDPAdmin 
 	{
 		Ensure = "Present"
-		serAuthentication = "NonSecure"
+		setAuthentication = "NonSecure"
 	}
 
         WindowsFeature DSCService 
