@@ -3,7 +3,7 @@ Configuration DNSConfig
      param
     ( 
          
-        [Parameter(Mandatory=$true)][string]$DomainName = "internaldomain.com",
+        [Parameter()][string]$DomainName = "internaldomain.com",
         [Parameter(Mandatory=$true)][string]$DomainAdminUsername,
         [Parameter(Mandatory=$true)][string]$DomainAdminPassword
     ) 
