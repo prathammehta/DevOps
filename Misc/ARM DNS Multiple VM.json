@@ -524,7 +524,7 @@
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "1.9",
+            "typeHandlerVersion": "2.0",
             "settings": {
               "ModulesUrl": "[parameters('devmodulesUrl')]",
               "SasToken": "",
@@ -549,7 +549,7 @@
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "1.9",
+            "typeHandlerVersion": "2.0",
             "settings": {
               "ModulesUrl": "[parameters('testmodulesUrl')]",
               "SasToken": "",
@@ -574,7 +574,7 @@
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "1.9",
+            "typeHandlerVersion": "2.0",
             "settings": {
               "ModulesUrl": "[parameters('buildmodulesUrl')]",
               "SasToken": "",
@@ -673,7 +673,7 @@
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "1.9",
+            "typeHandlerVersion": "2.0",
             "settings": {
               "ModulesUrl": "[parameters('dnsmodulesUrl')]",
               "SasToken": "",
