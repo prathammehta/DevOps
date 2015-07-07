@@ -10,5 +10,9 @@ Configuration BuildConfig
         {
         }
 
+        InstallTFS setupTFS
+	{
+	}
+
     }
 }
