@@ -690,7 +690,7 @@
     "mode": "incremental",
     "parameters": {
       "newStorageAccountName": {
-        "value": "multiplevmstore"
+        "value": "insidergstore"
       },
       "adminUsername": {
         "value": "sampra"
