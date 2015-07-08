@@ -80,63 +80,63 @@
         },
         "testimagePublisher": {
           "type": "string",
-          "defaultValue": "MicrosoftWindowsServer",
+          "defaultValue": "MicrosoftVisualStudio",
           "metadata": {
             "description": "Image Publisher"
           }
         },
         "buildimagePublisher": {
           "type": "string",
-          "defaultValue": "MicrosoftWindowsServer",
+          "defaultValue": "MicrosoftVisualStudio",
           "metadata": {
             "description": "Image Publisher"
           }
         },
         "devimagePublisher": {
           "type": "string",
-          "defaultValue": "MicrosoftWindowsServer",
+          "defaultValue": "MicrosoftVisualStudio",
           "metadata": {
             "description": "Image Publisher"
           }
         },
         "testimageOffer": {
           "type": "string",
-          "defaultValue": "WindowsServer",
+          "defaultValue": "VisualStudio",
           "metadata": {
             "description": "Image Offer"
           }
         },
         "devimageOffer": {
           "type": "string",
-          "defaultValue": "WindowsServer",
+          "defaultValue": "VisualStudio",
           "metadata": {
             "description": "Image Offer"
           }
         },
         "buildimageOffer": {
           "type": "string",
-          "defaultValue": "WindowsServer",
+          "defaultValue": "VisualStudio",
           "metadata": {
             "description": "Image Offer"
           }
         },
         "buildimageSKU": {
           "type": "string",
-          "defaultValue": "2012-R2-Datacenter",
+          "defaultValue": "2013-Ultimate-Update-4-ws2012-az26",
           "metadata": {
             "description": "Image SKU"
           }
         },
         "devimageSKU": {
           "type": "string",
-          "defaultValue": "2012-R2-Datacenter",
+          "defaultValue": "2013-Ultimate-Update-4-ws2012-az26",
           "metadata": {
             "description": "Image SKU"
           }
         },
         "testimageSKU": {
           "type": "string",
-          "defaultValue": "2012-R2-Datacenter",
+          "defaultValue": "2013-Ultimate-Update-4-ws2012-az26",
           "metadata": {
             "description": "Image SKU"
           }
