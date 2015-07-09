@@ -740,7 +740,7 @@
           "name": "pullvm",
           "location": "[parameters('location')]",
           "dependsOn": [
-            "Microsoft.Compute/virtualMachines/dnsvm",
+            "Microsoft.Compute/virtualMachines/dnsvm/extensions/dnsvmextension",
             "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
             "Microsoft.Network/networkInterfaces/pullnic"
           ],
@@ -797,13 +797,13 @@
               "Properties": { }
             }
           }
-        }
+        } 
       ]
     },
     "mode": "incremental",
     "parameters": {
       "newStorageAccountName": {
-        "value": "pullconfrgstore"
+        "value": "pulltimestore"
       },
       "adminUsername": {
         "value": "sampra"
