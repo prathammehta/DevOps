@@ -58,21 +58,21 @@
           }
         },
         "testvmSize": {
-          "defaultValue" : "Standard_D1",
+          "defaultValue": "Standard_D1",
           "type": "string",
           "metadata": {
             "description": "Size of the Virtual Machine."
           }
         },
         "buildvmSize": {
-          "defaultValue" : "Standard_D1",
+          "defaultValue": "Standard_D1",
           "type": "string",
           "metadata": {
             "description": "Size of the Virtual Machine."
           }
         },
         "devvmSize": {
-          "defaultValue" : "Standard_D1",
+          "defaultValue": "Standard_D1",
           "type": "string",
           "metadata": {
             "description": "Size of the Virtual Machine."
@@ -122,21 +122,21 @@
         },
         "buildimageSKU": {
           "type": "string",
-          "defaultValue": "2013-Ultimate-Update-4-ws2012-az26",
+          "defaultValue": "2015-Enterprise-RC",
           "metadata": {
             "description": "Image SKU"
           }
         },
         "devimageSKU": {
           "type": "string",
-          "defaultValue": "2013-Ultimate-Update-4-ws2012-az26",
+          "defaultValue": "2015-Enterprise-RC",
           "metadata": {
             "description": "Image SKU"
           }
         },
         "testimageSKU": {
           "type": "string",
-          "defaultValue": "2013-Ultimate-Update-4-ws2012-az26",
+          "defaultValue": "2015-Enterprise-RC",
           "metadata": {
             "description": "Image SKU"
           }
@@ -193,6 +193,20 @@
         "dnsconfigurationFunction": {
           "type": "string",
           "defaultValue": "DNSConfig.ps1\\DNSConfig",
+          "metadata": {
+            "description": "DSC configuration function to call"
+          }
+        },
+        "pullmodulesUrl": {
+          "type": "string",
+          "defaultValue": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip",
+          "metadata": {
+            "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
+          }
+        },
+        "pullconfigurationFunction": {
+          "type": "string",
+          "defaultValue": "PullConfig.ps1\\PullConfig",
           "metadata": {
             "description": "DSC configuration function to call"
           }
@@ -647,7 +661,7 @@
               "osDisk": {
                 "name": "osdisk",
                 "vhd": {
-                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','osdisk.vhd')]"
+                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','dnsosdisk.vhd')]"
                 },
                 "caching": "ReadWrite",
                 "createOption": "FromImage"
@@ -684,13 +698,111 @@
               }
             }
           }
-        }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/publicIPAddresses",
+          "name": "pullPublicIP",
+          "location": "[parameters('location')]",
+          "properties": {
+            "publicIPAllocationMethod": "dynamic"
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/networkInterfaces",
+          "name": "pullnic",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Network/publicIPAddresses/pullPublicIP",
+            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+          ],
+          "properties": {
+            "ipConfigurations": [
+              {
+                "name": "pullipconfig1",
+                "properties": {
+                  "privateIPAllocationMethod": "Dynamic",
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pullPublicIP')]"
+                  },
+                  "subnet": {
+                    "id": "[variables('subnet1Ref')]"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Compute/virtualMachines",
+          "name": "pullvm",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
+            "Microsoft.Network/networkInterfaces/pullnic"
+          ],
+          "properties": {
+            "hardwareProfile": {
+              "vmSize": "Standard_D1"
+            },
+            "osProfile": {
+              "computername": "pullvm",
+              "adminUsername": "[parameters('adminUsername')]",
+              "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+              "imageReference": {
+                "publisher": "MicrosoftWindowsServer",
+                "offer": "WindowsServer",
+                "sku": "2012-R2-Datacenter",
+                "version": "latest"
+              },
+              "osDisk": {
+                "name": "osdisk",
+                "vhd": {
+                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','pullosdisk.vhd')]"
+                },
+                "caching": "ReadWrite",
+                "createOption": "FromImage"
+              }
+            },
+            "networkProfile": {
+              "networkInterfaces": [
+                {
+                  "id": "[resourceId('Microsoft.Network/networkInterfaces', 'pullnic')]"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "pullvm/pullvmextension",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Compute/virtualMachines/pullvm"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.0",
+            "settings": {
+              "ModulesUrl": "[parameters('pullmodulesUrl')]",
+              "SasToken": "",
+              "ConfigurationFunction": "[parameters('pullconfigurationFunction')]",
+              "Properties": { }
+            }
+          }
+        } 
       ]
     },
     "mode": "incremental",
     "parameters": {
       "newStorageAccountName": {
-        "value": "insidergstore"
+        "value": "pleaseworkstore"
       },
       "adminUsername": {
         "value": "sampra"
