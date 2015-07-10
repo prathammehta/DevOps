@@ -796,7 +796,7 @@
               "Properties": { }
             }
           }
-        } 
+        }
       ]
     },
     "mode": "incremental",
@@ -818,6 +818,42 @@
       },
       "devNumberOfInstances": {
         "value": 1
+      },
+      "testvmSize": {
+        "value" :  "Standard_D1"
+      },
+      "buildvmSize": {
+        "value" :  "Standard_D1"
+      },
+      "devvmSize": {
+        "value" :  "Standard_D1"
+      },
+      "testimagePublisher": {
+        "Value": "MicrosoftVisualStudio"
+      },
+      "buildimagePublisher": {
+        "Value": "MicrosoftVisualStudio"
+      },
+      "devimagePublisher": {
+        "Value": "MicrosoftVisualStudio"
+      },
+      "testimageOffer": {
+        "Value": "VisualStudio"
+      },
+      "devimageOffer": {
+        "Value": "VisualStudio"
+      },
+      "buildimageOffer": {
+        "Value": "VisualStudio"
+      },
+      "buildimageSKU": {
+        "Value": "2015-Enterprise-RC"
+      },
+      "devimageSKU": {
+        "Value": "2015-Enterprise-RC"
+      },
+      "testimageSKU": {
+        "Value": "2015-Enterprise-RC"
       },
       "devmodulesUrl": {
         "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
