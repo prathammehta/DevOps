@@ -70,8 +70,12 @@ Configuration DNSConfig
             	DependsOn='[ADDomain]SetupDomain'
         }	
 
-    #End Configuration Block    
+    #End Configuration Block 
+    #Begin Pull Configuration
+
+        PullServerSetup ConfigurePull
+        {
+		DependsOn='[ADDomainController]SetupDomainController' 		
+        }   
     } 
 }
-
-# Restart-Computer -ComputerName "localhost" -Force
