@@ -109,7 +109,7 @@ function Set-TargetResource
     $jet4provider = "System.Data.OleDb"
     $jet4database = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=$env:PROGRAMFILES\WindowsPowerShell\DscService\Devices.mdb;"
     $eseprovider = "ESENT";
-    $esedatabase = "$env:PROGRAMFILES\WindowsPowerShell\DscService\Devices.edb";
+    $esedatabase = "$env:PROGRAMFILES\WindowsPowerShell\DscService\Devices.mdb";
 
     $culture = Get-Culture
     $language = $culture.TwoLetterISOLanguageName
