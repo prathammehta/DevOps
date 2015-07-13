@@ -1,5 +1,6 @@
 Configuration DNSConfig
 { 
+    
      param
     ( 
          
@@ -15,7 +16,7 @@ Configuration DNSConfig
     Import-DscResource -ModuleName xRemoteDesktopAdmin
     Import-DscResource -ModuleName ContosoDscResources
     Import-DscResource -ModuleName xPendingReboot
-    Import-DscResource –ModuleName ’PSDesiredStateConfiguration’
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
 
     $securePassword = ConvertTo-SecureString -AsPlainText $DomainAdminPassword -Force;
     $DomainAdminCred = New-Object System.Management.Automation.PSCredential($DomainAdminUsername, $securePassword);
@@ -25,14 +26,14 @@ Configuration DNSConfig
     
     #LCM configuration
 
-        xPendingReboot Reboot1 
-        {  
-            Name = ‘BeforeSoftwareInstall’ 
-    	} 
-    	LocalConfigurationManager 
-    	{ 
-    	    RebootNodeIfNeeded = $True 
-    	}
+    xPendingReboot Reboot1 
+    { 
+        Name = 'BeforeSoftwareInstall' 
+  	} 
+    LocalConfigurationManager 
+    { 
+        RebootNodeIfNeeded = $True 
+   	}
 
 	xRemoteDesktopAdmin RDPAdmin 
 	{
