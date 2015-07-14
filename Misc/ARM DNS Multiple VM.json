@@ -716,6 +716,17 @@
               }
             }
           }
+        },
+        {
+          "apiVersion": "2.0",
+          "name": "mysqlserver",
+          "type": "Microsoft.Sql/servers",
+          "location": "West US",
+          "properties": 
+          {
+            "administratorLogin": "admin",
+            "administratorLoginPassword": "password$123"
+          }
         }
       ]
     },
