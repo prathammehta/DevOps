@@ -795,6 +795,9 @@
       },
       "dataDiskSize": {
         "Value": 100
+      },
+      "location": {
+        "value": "West US"
       }
     }
   }
