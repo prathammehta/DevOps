@@ -724,8 +724,8 @@
           "location": "West US",
           "properties": 
           {
-            "administratorLogin": "admin",
-            "administratorLoginPassword": "password$123"
+            "administratorLogin": "[parameters('adminUsername')]",
+            "administratorLoginPassword": "[parameters('adminPassword')]"
           }
         }
       ]
