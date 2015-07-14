@@ -210,6 +210,13 @@
           "metadata": {
             "description": "DSC configuration function to call"
           }
+        },
+        "dataDiskSize": {
+          "type": "int",
+          "defaultValue": 100,
+          "metadata": {
+            "description": "The size of the data disk to be attached to the Dev Machine"
+          }
         }
       },
       "variables": {
@@ -418,7 +425,18 @@
                 },
                 "caching": "ReadWrite",
                 "createOption": "FromImage"
-              }
+              },
+              "dataDisks": [
+                {
+                  "name": "datadisk1",
+                  "diskSizeGB": "[parameters('dataDiskSize')]",
+                  "lun": 0,
+                  "vhd": {
+                    "Uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/','devvm',copyIndex(),'dataDisk1.vhd')]"
+                  },
+                  "createOption": "Empty"
+                }
+              ]
             },
             "networkProfile": {
               "networkInterfaces": [
@@ -698,111 +716,13 @@
               }
             }
           }
-        },
-        {
-          "apiVersion": "2015-05-01-preview",
-          "type": "Microsoft.Network/publicIPAddresses",
-          "name": "pullPublicIP",
-          "location": "[parameters('location')]",
-          "properties": {
-            "publicIPAllocationMethod": "dynamic"
-          }
-        },
-        {
-          "apiVersion": "2015-05-01-preview",
-          "type": "Microsoft.Network/networkInterfaces",
-          "name": "pullnic",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "Microsoft.Network/publicIPAddresses/pullPublicIP",
-            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-          ],
-          "properties": {
-            "ipConfigurations": [
-              {
-                "name": "pullipconfig1",
-                "properties": {
-                  "privateIPAllocationMethod": "Dynamic",
-                  "publicIPAddress": {
-                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pullPublicIP')]"
-                  },
-                  "subnet": {
-                    "id": "[variables('subnet1Ref')]"
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "apiVersion": "2015-05-01-preview",
-          "type": "Microsoft.Compute/virtualMachines",
-          "name": "pullvm",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
-            "Microsoft.Network/networkInterfaces/pullnic"
-          ],
-          "properties": {
-            "hardwareProfile": {
-              "vmSize": "Standard_D1"
-            },
-            "osProfile": {
-              "computername": "pullvm",
-              "adminUsername": "[parameters('adminUsername')]",
-              "adminPassword": "[parameters('adminPassword')]"
-            },
-            "storageProfile": {
-              "imageReference": {
-                "publisher": "MicrosoftWindowsServer",
-                "offer": "WindowsServer",
-                "sku": "2012-R2-Datacenter",
-                "version": "latest"
-              },
-              "osDisk": {
-                "name": "osdisk",
-                "vhd": {
-                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','pullosdisk.vhd')]"
-                },
-                "caching": "ReadWrite",
-                "createOption": "FromImage"
-              }
-            },
-            "networkProfile": {
-              "networkInterfaces": [
-                {
-                  "id": "[resourceId('Microsoft.Network/networkInterfaces', 'pullnic')]"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "pullvm/pullvmextension",
-          "apiVersion": "2015-05-01-preview",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "Microsoft.Compute/virtualMachines/pullvm"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.0",
-            "settings": {
-              "ModulesUrl": "[parameters('pullmodulesUrl')]",
-              "SasToken": "",
-              "ConfigurationFunction": "[parameters('pullconfigurationFunction')]",
-              "Properties": { }
-            }
-          }
         }
       ]
     },
     "mode": "incremental",
     "parameters": {
       "newStorageAccountName": {
-        "value": "pleaseworkstore"
+        "value": "pulldnstrystore"
       },
       "adminUsername": {
         "value": "sampra"
@@ -819,14 +739,32 @@
       "devNumberOfInstances": {
         "value": 1
       },
+      "devmodulesUrl": {
+        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
+      },
+      "devconfigurationFunction": {
+        "value": "DevConfig.ps1\\DevConfig"
+      },
+      "testmodulesUrl": {
+        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
+      },
+      "testconfigurationFunction": {
+        "value": "TestConfig.ps1\\TestConfig"
+      },
+      "buildmodulesUrl": {
+        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
+      },
+      "buildconfigurationFunction": {
+        "value": "BuildConfig.ps1\\BuildConfig"
+      },
       "testvmSize": {
-        "value" :  "Standard_D1"
+        "value": "Standard_D1"
       },
       "buildvmSize": {
-        "value" :  "Standard_D1"
+        "value": "Standard_D1"
       },
       "devvmSize": {
-        "value" :  "Standard_D1"
+        "value": "Standard_D1"
       },
       "testimagePublisher": {
         "Value": "MicrosoftVisualStudio"
@@ -855,23 +793,8 @@
       "testimageSKU": {
         "Value": "2015-Enterprise-RC"
       },
-      "devmodulesUrl": {
-        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
-      },
-      "devconfigurationFunction": {
-        "value": "DevConfig.ps1\\DevConfig"
-      },
-      "testmodulesUrl": {
-        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
-      },
-      "testconfigurationFunction": {
-        "value": "TestConfig.ps1\\TestConfig"
-      },
-      "buildmodulesUrl": {
-        "value": "https://github.com/prathammehta/DevOps/raw/master/ContosoWebsite.ps1.zip"
-      },
-      "buildconfigurationFunction": {
-        "value": "BuildConfig.ps1\\BuildConfig"
+      "dataDiskSize": {
+        "Value": 100
       }
     }
   }
