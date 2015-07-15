@@ -24,15 +24,15 @@ Configuration DNSConfig
     Node 'localhost'
     { 
     
-    #LCM configuration
+        #LCM configuration
 
-    xPendingReboot Reboot1 
-    { 
-        Name = 'BeforeSoftwareInstall' 
-  	} 
-    LocalConfigurationManager 
-    { 
-        RebootNodeIfNeeded = $True 
+        xPendingReboot Reboot1 
+        {     
+            Name = 'BeforeSoftwareInstall' 
+        } 
+        LocalConfigurationManager 
+        { 
+            RebootNodeIfNeeded = $True 
    	}
 
 	xRemoteDesktopAdmin RDPAdmin 
@@ -49,10 +49,15 @@ Configuration DNSConfig
 	    	DependsOn = "[xRemoteDesktopAdmin]RDPAdmin"
         }
 
-        PullServerSetup ConfigurePull
+        PullServerSetup CreatePull
         {
 		DependsOn='[WindowsFeature]DSCService' 		
-        } 
+        }
+
+        ConfigurePullServer  ConfigurePull
+	{
+		DependsOn='[PullServerSetup]CreatePull'
+	}
 
 	#ConfigurationBlock
 
@@ -61,7 +66,7 @@ Configuration DNSConfig
             	Ensure = 'Present'
             	Name = 'AD-Domain-Services'
             	IncludeAllSubFeature = $true
-		DependsOn = '[PullServerSetup]ConfigurePull'
+		DependsOn = '[ConfigurePullServer]ConfigurePull'
         }
          
         WindowsFeature RSATTools 
