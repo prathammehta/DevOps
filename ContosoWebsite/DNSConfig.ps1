@@ -66,11 +66,6 @@ Configuration DNSConfig
 		DependsOn='[WindowsFeature]DSCService' 		
         }
 
-        ConfigurePullServer  ConfigurePull
-	{
-		DependsOn='[PullServerSetup]CreatePull'
-	}
-
 	#ConfigurationBlock
 
         WindowsFeature ADDSInstall 
@@ -78,7 +73,7 @@ Configuration DNSConfig
             	Ensure = 'Present'
             	Name = 'AD-Domain-Services'
             	IncludeAllSubFeature = $true
-		DependsOn = '[ConfigurePullServer]ConfigurePull'
+		DependsOn = '[PullServerSetup]CreatePull'
         }
          
         WindowsFeature RSATTools 
