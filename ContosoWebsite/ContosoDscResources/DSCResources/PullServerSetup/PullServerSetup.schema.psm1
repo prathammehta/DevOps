@@ -9,12 +9,6 @@ configuration PullServerSetup
  
         Import-DSCResource -ModuleName xPSDesiredStateConfiguration 
   
-        WindowsFeature DSCServiceFeature 
-        { 
-            Ensure = "Present" 
-            Name   = "DSC-Service"             
-        } 
- 
         WindowsFeature WinAuth 
         { 
             Ensure = "Present" 
@@ -31,7 +25,6 @@ configuration PullServerSetup
             ModulePath              = "$env:PROGRAMFILES\WindowsPowerShell\DscService\Modules" 
             ConfigurationPath       = "$env:PROGRAMFILES\WindowsPowerShell\DscService\Configuration"             
             State                   = "Started" 
-            DependsOn               = "[WindowsFeature]DSCServiceFeature"                         
         } 
  
         xDscWebService PSDSCComplianceServer 
@@ -43,6 +36,6 @@ configuration PullServerSetup
             CertificateThumbPrint   = "AllowUnencryptedTraffic" 
             State                   = "Started" 
             IsComplianceServer      = $true 
-            DependsOn               = @("[WindowsFeature]DSCServiceFeature","[WindowsFeature]WinAuth","[xDSCWebService]PSDSCPullServer") 
+            DependsOn               = @("[WindowsFeature]WinAuth","[xDSCWebService]PSDSCPullServer") 
         }
 }
