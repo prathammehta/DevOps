@@ -18,6 +18,18 @@ Configuration DNSConfig
     Import-DscResource -ModuleName xPendingReboot
     Import-DscResource -ModuleName DevOpsDesiredStateConfiguration
 
+    $s = "https://github.com/prathammehta/DevOps/raw/master/mofs.zip"
+    $d = "C:\Program Files\WindowsPowerShell\DscService\Configuration\mofs.zip"
+    Invoke-WebRequest $s -OutFile $d
+
+    $shell = new-object -com shell.application
+    $zip = $shell.NameSpace($d)
+    foreach($item in $zip.items())
+    {
+	$shell.Namespace(“C:\Program Files\WindowsPowerShell\DscService\Configuration”).copyhere($item)
+    }
+
+
     $securePassword = ConvertTo-SecureString -AsPlainText $DomainAdminPassword -Force;
     $DomainAdminCred = New-Object System.Management.Automation.PSCredential($DomainAdminUsername, $securePassword);
    

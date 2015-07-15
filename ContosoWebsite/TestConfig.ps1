@@ -4,50 +4,17 @@ Configuration TestConfig
     
     Node "localhost"
     {  
-	Configuration SimpleMetaConfigurationForPull 
+	LocalConfigurationManager 
 	{ 
-
-            Param
-            (
-            [Parameter(Mandatory=$True)]
-            
-            [String]$mac,
-            [String]$user,
-            [String]$pass
-            )
-
-	    $source = "http://dnsvm:9090/dscnodes.csv"
-	    $destination = "c:\newdata.csv"
-	    $secpasswd = ConvertTo-SecureString $pass -AsPlainText -Force
-	    $credential = New-Object System.Management.Automation.PSCredential($user, $secpasswd)
-
-    	    Invoke-WebRequest $source -OutFile $destination -Credential $credential
-
-	    $data = import-csv "C:\newdata.csv" -header("NodeName","NodeGUID")
-
-	    $NodeGUID =($data | where-object {$_."NodeName" -match $mac}).NodeGUID #or -eq 
-
-     	    LocalConfigurationManager 
-	    { 
-       		ConfigurationID = $NodeGUID;
-       		RefreshMode = "PULL";
-       		DownloadManagerName = "WebDownloadManager";
-       		RebootNodeIfNeeded = $true;
-       		RefreshFrequencyMins = 30;
-       		ConfigurationModeFrequencyMins = 30; 
-       		ConfigurationMode = "ApplyAndAutoCorrect";
-       		DownloadManagerCustomData = @{ServerUrl =    "http://dnsvm:8080/PSDSCPullServer.svc"; AllowUnsecureConnection = “TRUE”}
-     	    } 
-     
-        }  
-
-
-        SimpleMetaConfigurationForPull  -Output "." -mac "testvm0" -user "sampra" -pass "Applegr8"
-
-        $FilePath = (Get-Location -PSProvider FileSystem).Path + "\SimpleMetaConfigurationForPull"
-
-        Set-DscLocalConfigurationManager -ComputerName "localhost" -Path $FilePath -Verbose
-
+            ConfigurationID = "334a740d-0aac-4c92-9bb6-6895ac050ead";
+       	    RefreshMode = "PULL";
+       	    DownloadManagerName = "WebDownloadManager";
+       	    RebootNodeIfNeeded = $true;
+       	    RefreshFrequencyMins = 30;
+       	    ConfigurationModeFrequencyMins = 30; 
+       	    ConfigurationMode = "ApplyAndAutoCorrect";
+       	    DownloadManagerCustomData = @{ServerUrl =    "http://dnsvm:8080/PSDSCPullServer.svc"; AllowUnsecureConnection = “TRUE”}
+     	} 
         TestSetup setupTestMachine
         {
         }
