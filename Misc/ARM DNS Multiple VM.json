@@ -250,6 +250,12 @@
                 "[variables('addressPrefix')]"
               ]
             },
+            "dhcpOptions": {
+              "dnsServers": [
+                "10.0.0.4",
+                "8.8.8.8"
+              ]
+            },
             "subnets": [
               {
                 "name": "[variables('subnet1Name')]",
@@ -258,6 +264,114 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/publicIPAddresses",
+          "name": "dnsPublicIP",
+          "location": "[parameters('location')]",
+          "properties": {
+            "publicIPAllocationMethod": "dynamic"
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Network/networkInterfaces",
+          "name": "dnsnic",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Network/publicIPAddresses/dnsPublicIP",
+            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+          ],
+          "properties": {
+            "ipConfigurations": [
+              {
+                "name": "dnsipconfig1",
+                "properties": {
+                  "privateIPAllocationMethod": "static",
+                  "privateIPAddress": "10.0.0.4",
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'dnsPublicIP')]"
+                  },
+                  "subnet": {
+                    "id": "[variables('subnet1Ref')]"
+                  }
+                }
+              }
+            ],
+            "dnsSettings": {
+              "dnsServers": [
+                "10.0.0.4",
+                "8.8.8.8"
+              ]
+            }
+          }
+        },
+        {
+          "apiVersion": "2015-05-01-preview",
+          "type": "Microsoft.Compute/virtualMachines",
+          "name": "dnsvm",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
+            "Microsoft.Network/networkInterfaces/dnsnic"
+          ],
+          "properties": {
+            "hardwareProfile": {
+              "vmSize": "Standard_D1"
+            },
+            "osProfile": {
+              "computername": "dnsvm",
+              "adminUsername": "[parameters('adminUsername')]",
+              "adminPassword": "[parameters('adminPassword')]"
+            },
+            "storageProfile": {
+              "imageReference": {
+                "publisher": "MicrosoftWindowsServer",
+                "offer": "WindowsServer",
+                "sku": "2012-R2-Datacenter",
+                "version": "latest"
+              },
+              "osDisk": {
+                "name": "osdisk",
+                "vhd": {
+                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','dnsosdisk.vhd')]"
+                },
+                "caching": "ReadWrite",
+                "createOption": "FromImage"
+              }
+            },
+            "networkProfile": {
+              "networkInterfaces": [
+                {
+                  "id": "[resourceId('Microsoft.Network/networkInterfaces', 'dnsnic')]"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "dnsvm/dnsvmextension",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Compute/virtualMachines/dnsvm"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.0",
+            "settings": {
+              "ModulesUrl": "[parameters('dnsmodulesUrl')]",
+              "SasToken": "",
+              "ConfigurationFunction": "[parameters('dnsconfigurationFunction')]",
+              "Properties": {
+                "DomainAdminUsername": "[parameters('adminUsername')]",
+                "DomainAdminPassword": "[parameters('adminPassword')]"
+              }
+            }
           }
         },
         {
@@ -561,7 +675,7 @@
               "ModulesUrl": "[parameters('devmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('devconfigurationFunction')]",
-              "Properties": { }
+              "Properties": {}
             },
             "protectedSettings": null
           }
@@ -586,7 +700,7 @@
               "ModulesUrl": "[parameters('testmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('testconfigurationFunction')]",
-              "Properties": { }
+              "Properties": {}
             },
             "protectedSettings": null
           }
@@ -611,119 +725,17 @@
               "ModulesUrl": "[parameters('buildmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('buildconfigurationFunction')]",
-              "Properties": { }
+              "Properties": {}
             },
             "protectedSettings": null
           }
         },
         {
-          "apiVersion": "2015-05-01-preview",
-          "type": "Microsoft.Network/publicIPAddresses",
-          "name": "dnsPublicIP",
-          "location": "[parameters('location')]",
-          "properties": {
-            "publicIPAllocationMethod": "dynamic"
-          }
-        },
-        {
-          "apiVersion": "2015-05-01-preview",
-          "type": "Microsoft.Network/networkInterfaces",
-          "name": "dnsnic",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "Microsoft.Network/publicIPAddresses/dnsPublicIP",
-            "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-          ],
-          "properties": {
-            "ipConfigurations": [
-              {
-                "name": "dnsipconfig1",
-                "properties": {
-                  "privateIPAllocationMethod": "Dynamic",
-                  "publicIPAddress": {
-                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'dnsPublicIP')]"
-                  },
-                  "subnet": {
-                    "id": "[variables('subnet1Ref')]"
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "apiVersion": "2015-05-01-preview",
-          "type": "Microsoft.Compute/virtualMachines",
-          "name": "dnsvm",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
-            "Microsoft.Network/networkInterfaces/dnsnic"
-          ],
-          "properties": {
-            "hardwareProfile": {
-              "vmSize": "Standard_D1"
-            },
-            "osProfile": {
-              "computername": "dnsvm",
-              "adminUsername": "[parameters('adminUsername')]",
-              "adminPassword": "[parameters('adminPassword')]"
-            },
-            "storageProfile": {
-              "imageReference": {
-                "publisher": "MicrosoftWindowsServer",
-                "offer": "WindowsServer",
-                "sku": "2012-R2-Datacenter",
-                "version": "latest"
-              },
-              "osDisk": {
-                "name": "osdisk",
-                "vhd": {
-                  "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','dnsosdisk.vhd')]"
-                },
-                "caching": "ReadWrite",
-                "createOption": "FromImage"
-              }
-            },
-            "networkProfile": {
-              "networkInterfaces": [
-                {
-                  "id": "[resourceId('Microsoft.Network/networkInterfaces', 'dnsnic')]"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "dnsvm/dnsvmextension",
-          "apiVersion": "2015-05-01-preview",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "Microsoft.Compute/virtualMachines/dnsvm"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.0",
-            "settings": {
-              "ModulesUrl": "[parameters('dnsmodulesUrl')]",
-              "SasToken": "",
-              "ConfigurationFunction": "[parameters('dnsconfigurationFunction')]",
-              "Properties": {
-                "DomainAdminUsername": "[parameters('adminUsername')]",
-                "DomainAdminPassword": "[parameters('adminPassword')]"
-              }
-            }
-          }
-        },
-        {
           "apiVersion": "2.0",
-          "name": "mysqlserver",
+          "name": "totaltrysql",
           "type": "Microsoft.Sql/servers",
           "location": "West US",
-          "properties": 
-          {
+          "properties": {
             "administratorLogin": "[parameters('adminUsername')]",
             "administratorLoginPassword": "[parameters('adminPassword')]"
           }
@@ -733,7 +745,7 @@
     "mode": "incremental",
     "parameters": {
       "newStorageAccountName": {
-        "value": "pulldnstrystore"
+        "value": "totaldepstore"
       },
       "adminUsername": {
         "value": "sampra"
@@ -769,13 +781,13 @@
         "value": "BuildConfig.ps1\\BuildConfig"
       },
       "testvmSize": {
-        "value": "Standard_D1"
+        "value": "Standard_A2"
       },
       "buildvmSize": {
-        "value": "Standard_D1"
+        "value": "Standard_A2"
       },
       "devvmSize": {
-        "value": "Standard_D1"
+        "value": "Standard_A2"
       },
       "testimagePublisher": {
         "Value": "MicrosoftVisualStudio"
