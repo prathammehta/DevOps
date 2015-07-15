@@ -26,7 +26,7 @@ Configuration DNSConfig
     $zip = $shell.NameSpace($d)
     foreach($item in $zip.items())
     {
-	$shell.Namespace(“C:\Program Files\WindowsPowerShell\DscService\Configuration”).copyhere($item)
+	$shell.Namespace("C:\Program Files\WindowsPowerShell\DscService\Configuration").copyhere($item)
     }
 
 

@@ -14,7 +14,7 @@ Configuration DevConfig
             RefreshFrequencyMins = 30;
             ConfigurationModeFrequencyMins = 30; 
             ConfigurationMode = "ApplyAndAutoCorrect";
-            DownloadManagerCustomData = @{ServerUrl =    "http://dnsvm:8080/PSDSCPullServer.svc"; AllowUnsecureConnection = “TRUE”}
+            DownloadManagerCustomData = @{ServerUrl =    "http://dnsvm:8080/PSDSCPullServer.svc"; AllowUnsecureConnection = "TRUE"}
         } 
 
         DevSetup setupDevMachine
