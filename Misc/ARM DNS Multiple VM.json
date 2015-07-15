@@ -379,6 +379,9 @@
           "type": "Microsoft.Network/publicIPAddresses",
           "name": "[concat('dev','publicIP', copyIndex())]",
           "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Network/networkInterfaces/dnsnic"
+          ],
           "copy": {
             "name": "publicIPLoop",
             "count": "[parameters('devNumberOfInstances')]"
@@ -392,6 +395,9 @@
           "type": "Microsoft.Network/publicIPAddresses",
           "name": "[concat('test','publicIP', copyIndex())]",
           "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Network/networkInterfaces/dnsnic"
+          ],
           "copy": {
             "name": "publicIPLoop",
             "count": "[parameters('testNumberOfInstances')]"
@@ -405,6 +411,9 @@
           "type": "Microsoft.Network/publicIPAddresses",
           "name": "[concat('build','publicIP', copyIndex())]",
           "location": "[parameters('location')]",
+          "dependsOn": [
+            "Microsoft.Network/networkInterfaces/dnsnic"
+          ],
           "copy": {
             "name": "publicIPLoop",
             "count": "[parameters('buildNumberOfInstances')]"
