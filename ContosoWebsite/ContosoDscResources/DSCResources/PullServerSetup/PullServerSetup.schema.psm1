@@ -36,6 +36,6 @@ configuration PullServerSetup
             CertificateThumbPrint   = "AllowUnencryptedTraffic" 
             State                   = "Started" 
             IsComplianceServer      = $true 
-            DependsOn               = @("[WindowsFeature]WinAuth","[xDSCWebService]PSDSCPullServer") 
+            DependsOn               = @("[WindowsFeature]WinAuth","[DevOpsDscWebService]PSDSCPullServer") 
         }
 }
