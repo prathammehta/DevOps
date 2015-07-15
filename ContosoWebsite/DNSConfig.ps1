@@ -16,7 +16,7 @@ Configuration DNSConfig
     Import-DscResource -ModuleName xRemoteDesktopAdmin
     Import-DscResource -ModuleName ContosoDscResources
     Import-DscResource -ModuleName xPendingReboot
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName DevOpsDesiredStateConfiguration
 
     $securePassword = ConvertTo-SecureString -AsPlainText $DomainAdminPassword -Force;
     $DomainAdminCred = New-Object System.Management.Automation.PSCredential($DomainAdminUsername, $securePassword);

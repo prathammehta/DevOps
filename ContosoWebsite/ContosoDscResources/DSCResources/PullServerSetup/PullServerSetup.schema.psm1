@@ -7,7 +7,7 @@ configuration PullServerSetup
             [string] $certificateThumbPrint = "AllowUnencryptedTraffic"
         ) 
  
-        Import-DSCResource -ModuleName xPSDesiredStateConfiguration 
+        Import-DSCResource -ModuleName DevOpsDesiredStateConfiguration 
   
         WindowsFeature WinAuth 
         { 
@@ -15,7 +15,7 @@ configuration PullServerSetup
             Name   = "web-Windows-Auth"             
         } 
  
-        xDscWebService PSDSCPullServer 
+        DevOpsDscWebService PSDSCPullServer 
         { 
             Ensure                  = "Present" 
             EndpointName            = "PullSvc" 
@@ -27,7 +27,7 @@ configuration PullServerSetup
             State                   = "Started" 
         } 
  
-        xDscWebService PSDSCComplianceServer 
+        DevOpsDSCWebService PSDSCComplianceServer 
         {   
             Ensure                  = "Present" 
             EndpointName            = "DscConformance" 
