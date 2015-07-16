@@ -741,7 +741,7 @@
         },
         {
           "apiVersion": "2.0",
-          "name": "totaltrysql",
+          "name": "msinternalstoresql",
           "type": "Microsoft.Sql/servers",
           "location": "West US",
           "properties": {
