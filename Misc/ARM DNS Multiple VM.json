@@ -455,7 +455,13 @@
                   }
                 }
               }
-            ]
+            ],
+            "dnsSettings": {
+              "dnsServers": [
+                "10.0.0.4",
+                "8.8.8.8"
+              ]
+            }
           }
         },
         {
@@ -485,7 +491,13 @@
                   }
                 }
               }
-            ]
+            ],
+            "dnsSettings": {
+              "dnsServers": [
+                "10.0.0.4",
+                "8.8.8.8"
+              ]
+            }
           }
         },
         {
@@ -515,7 +527,13 @@
                   }
                 }
               }
-            ]
+            ],
+            "dnsSettings": {
+              "dnsServers": [
+                "10.0.0.4",
+                "8.8.8.8"
+              ]
+            }
           }
         },
         {
@@ -837,7 +855,7 @@
       "location": {
         "value": "West US"
       },
-      "sqlSeverName" : {
+      "sqlSeverName": {
         "value": "sqlstoredefaultname"
       }
     }
