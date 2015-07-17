@@ -836,7 +836,7 @@
       },
       "location": {
         "value": "West US"
-      }
+      },
       "sqlSeverName" : {
         "value": "sqlstoredefaultname"
       }
