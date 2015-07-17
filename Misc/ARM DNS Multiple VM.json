@@ -217,6 +217,12 @@
           "metadata": {
             "description": "The size of the data disk to be attached to the Dev Machine"
           }
+        },
+        "sqlSeverName": {
+          "type": "string",
+          "metadata": {
+            "description": "Name for the sql server"
+          }
         }
       },
       "variables": {
@@ -741,7 +747,7 @@
         },
         {
           "apiVersion": "2.0",
-          "name": "msinternalstoresql",
+          "name": "[parameters('sqlSeverName')]",
           "type": "Microsoft.Sql/servers",
           "location": "West US",
           "properties": {
@@ -830,6 +836,9 @@
       },
       "location": {
         "value": "West US"
+      }
+      "sqlSeverName" : {
+        "value": "sqlstoredefaultname"
       }
     }
   }
