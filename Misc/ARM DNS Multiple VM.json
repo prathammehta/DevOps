@@ -223,6 +223,13 @@
           "metadata": {
             "description": "Name for the sql server"
           }
+        },
+        "domainName": {
+          "defaultValue": "internaldomain.net",
+          "type": "string",
+          "metadata": {
+            "description": "The domain name that all the VMs should belong to."
+          }
         }
       },
       "variables": {
@@ -233,7 +240,8 @@
         "subnet1Prefix": "10.0.0.0/24",
         "subnet1Ref": "[concat(variables('vnetID'),'/subnets/', variables('subnet1Name'))]",
         "vmStorageAccountContainerName": "vhds",
-        "vmExtensionName": "dscExtension"
+        "vmExtensionName": "dscExtension",
+        "domainName": "internaldomain.net"
       },
       "resources": [
         {
@@ -374,6 +382,7 @@
               "SasToken": "",
               "ConfigurationFunction": "[parameters('dnsconfigurationFunction')]",
               "Properties": {
+                "DomainName": "[parameters('domainName')]",
                 "DomainAdminUsername": "[parameters('adminUsername')]",
                 "DomainAdminPassword": "[parameters('adminPassword')]"
               }
@@ -708,7 +717,9 @@
               "ModulesUrl": "[parameters('devmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('devconfigurationFunction')]",
-              "Properties": {}
+              "Properties": {
+                "DomainName": "[parameters('domainName')]"
+              }
             },
             "protectedSettings": null
           }
@@ -733,7 +744,9 @@
               "ModulesUrl": "[parameters('testmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('testconfigurationFunction')]",
-              "Properties": {}
+              "Properties": {
+                "DomainName": "[parameters('domainName')]"
+              }
             },
             "protectedSettings": null
           }
@@ -758,7 +771,9 @@
               "ModulesUrl": "[parameters('buildmodulesUrl')]",
               "SasToken": "",
               "ConfigurationFunction": "[parameters('buildconfigurationFunction')]",
-              "Properties": {}
+              "Properties": {
+                "DomainName": "[parameters('domainName')]"
+              }
             },
             "protectedSettings": null
           }
@@ -857,6 +872,9 @@
       },
       "sqlSeverName": {
         "value": "sqlstoredefaultname"
+      },
+      "domainName": {
+        "value": "internaldomain.net"
       }
     }
   }

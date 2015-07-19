@@ -4,7 +4,7 @@ Configuration DNSConfig
      param
     ( 
          
-        [Parameter()][string]$DomainName = "internaldomain.com",
+        [Parameter(Mandatory=$true)][string]$DomainName,
         [Parameter(Mandatory=$true)][string]$DomainAdminUsername,
         [Parameter(Mandatory=$true)][string]$DomainAdminPassword
     ) 
@@ -45,63 +45,63 @@ Configuration DNSConfig
         LocalConfigurationManager 
         { 
             RebootNodeIfNeeded = $True 
-   	}
+   	    }
 
-	xRemoteDesktopAdmin RDPAdmin 
-	{
-		Ensure = "Present"
-		UserAuthentication = "NonSecure"
-	}
+        xRemoteDesktopAdmin RDPAdmin 
+        {
+	        Ensure = "Present"
+	        UserAuthentication = "NonSecure"
+        }
 
-	WindowsFeature DSCService 
-	{
-            	Name = "DSC-Service"
-            	Ensure = "Present"
-            	IncludeAllSubFeature = $true
-	    	DependsOn = "[xRemoteDesktopAdmin]RDPAdmin"
+        WindowsFeature DSCService 
+        {
+            Name = "DSC-Service"
+            Ensure = "Present"
+            IncludeAllSubFeature = $true
+	        DependsOn = "[xRemoteDesktopAdmin]RDPAdmin"
         }
 
         PullServerSetup CreatePull
         {
-		DependsOn='[WindowsFeature]DSCService' 		
+	        DependsOn='[WindowsFeature]DSCService' 		
         }
 
-	#ConfigurationBlock
+        #ConfigurationBlock
 
         WindowsFeature ADDSInstall 
         {   
-            	Ensure = 'Present'
-            	Name = 'AD-Domain-Services'
-            	IncludeAllSubFeature = $true
-		DependsOn = '[PullServerSetup]CreatePull'
+            Ensure = 'Present'
+            Name = 'AD-Domain-Services'
+            IncludeAllSubFeature = $true
+            DependsOn = '[PullServerSetup]CreatePull'
         }
          
         WindowsFeature RSATTools 
         { 
-            	DependsOn= '[WindowsFeature]ADDSInstall'
-            	Ensure = 'Present'
-            	Name = 'RSAT-AD-Tools'
-            	IncludeAllSubFeature = $true
+            DependsOn= '[WindowsFeature]ADDSInstall'
+            Ensure = 'Present'
+            Name = 'RSAT-AD-Tools'
+            IncludeAllSubFeature = $true
         }
 
         ADDomain SetupDomain 
-	{	
-            	DomainName = $DomainName
-            	DomainAdministratorUsername = $DomainAdminUsername
-            	DomainAdministratorPassword = $DomainAdminPassword
-            	SafemodeAdministratorUsername = $DomainAdminUsername
-            	SafemodeAdministratorPassword = $DomainAdminPassword
-            	DependsOn='[WindowsFeature]RSATTools'
+        {	
+            DomainName = $DomainName
+            DomainAdministratorUsername = $DomainAdminUsername
+            DomainAdministratorPassword = $DomainAdminPassword
+            SafemodeAdministratorUsername = $DomainAdminUsername
+            SafemodeAdministratorPassword = $DomainAdminPassword
+            DependsOn='[WindowsFeature]RSATTools'
         }
  
         ADDomainController SetupDomainController 
-	{
-            	DomainName = $DomainName
-            	DomainAdministratorUsername = $DomainAdminUsername
-            	DomainAdministratorPassword = $DomainAdminPassword
-            	SafemodeAdministratorUsername = $DomainAdminUsername
-            	SafemodeAdministratorPassword = $DomainAdminPassword
-            	DependsOn='[ADDomain]SetupDomain'
+        {
+            DomainName = $DomainName
+            DomainAdministratorUsername = $DomainAdminUsername
+            DomainAdministratorPassword = $DomainAdminPassword
+            SafemodeAdministratorUsername = $DomainAdminUsername
+            SafemodeAdministratorPassword = $DomainAdminPassword
+            DependsOn='[ADDomain]SetupDomain'
         }	
 
     #End Configuration Block 

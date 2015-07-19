@@ -1,8 +1,13 @@
 Configuration BuildConfig
 {
-    Import-DSCResource -ModuleName ContosoDscResources
-    
+    param
+    (
+        [Parameter(Mandatory=$true)]
+        [string]
+        $DomainName
+    )
 
+    Import-DSCResource -ModuleName ContosoDscResources
 
     Node "localhost"
     {  
@@ -19,13 +24,19 @@ Configuration BuildConfig
        	    DownloadManagerCustomData = @{ServerUrl =    "http://dnsvm:8080/PSDSCPullServer.svc"; AllowUnsecureConnection = "TRUE"}
      	}
 
+        CommonSetup commonSetup
+        {
+            DomainName = $DomainName
+        }
+
         BuildSetup setupBuildMachine
         {
+
         }
 
         InstallTFS setupTFS
-	{
-	}
+	    {
+	    }
 
     }
 }
