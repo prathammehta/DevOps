@@ -793,13 +793,13 @@
     "mode": "incremental",
     "parameters": {
       "newStorageAccountName": {
-        "value": "totaldepstore"
+        "value": "aninteststore"
       },
       "adminUsername": {
-        "value": "devopers"
+        "value": "anin"
       },
       "adminPassword": {
-        "value": "TestPass123!"
+        "value": "Hello123"
       },
       "testNumberOfInstances": {
         "value": 1
@@ -835,7 +835,7 @@
         "value": "Standard_A2"
       },
       "devvmSize": {
-        "value": "Standard_A2"
+        "value": "Standard_A1"
       },
       "testimagePublisher": {
         "Value": "MicrosoftVisualStudio"
@@ -871,10 +871,10 @@
         "value": "West US"
       },
       "sqlSeverName": {
-        "value": "sqlstoredefaultname"
+        "value": "aninsqlstore"
       },
       "domainName": {
-        "value": "internaldomain.net"
+        "value": "anindit.net"
       }
     }
   }
