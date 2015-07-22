@@ -1,3 +1,17 @@
+Configuration NonSecureDynamicUpdates
+{
+    param
+    (
+        [Parameter(Mandatory=$true)][string]$DomainName
+    )
+
+    $ZoneClass = Get-WMIObject MicrosoftDNS_Zone -Namespace "root\MicrosoftDNS" -ComputerName "localhost" -Filter "ContainerName='$DomainName'"
+    
+    if(!(!($ZoneClass))) {
+        dnscmd /config $DomainName /AllowUpdate 1
+    }
+}
+
 Configuration DNSConfig
 { 
     
@@ -102,6 +116,12 @@ Configuration DNSConfig
             SafemodeAdministratorUsername = $DomainAdminUsername
             SafemodeAdministratorPassword = $DomainAdminPassword
             DependsOn='[ADDomain]SetupDomain'
+        }
+
+        NonSecureDynamicUpdates SetNonSecureUpdate 
+        {
+            DomainName = $DomainName
+            DependsOn = '[ADDomainController]SetupDomainController'
         }	
 
     #End Configuration Block 
